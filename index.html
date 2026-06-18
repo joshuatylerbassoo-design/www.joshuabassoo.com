@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Joshua Bassoo</title>
+  <meta name="description" content="The personal site of Joshua Bassoo.">
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <!-- Custom -->
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar navbar-expand-lg navbar-stoic fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="index.html"><span class="brand-mark">J.</span>BASSOO</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMain">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="pages/about.html">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="pages/resume.html">Résumé</a></li>
+          <li class="nav-item"><a class="nav-link" href="pages/gallery.html">Gallery</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===== HERO MEDALLION ===== -->
+  <section class="hero-stage">
+    <div class="text-center" style="position: relative; z-index: 1;">
+
+      <div class="medallion-wrap">
+        <!-- Orbiting text ring -->
+        <svg class="medallion-orbit-text" viewBox="0 0 528 528" aria-hidden="true">
+          <defs>
+            <path id="orbitPath" d="M 264, 264 m -222, 0 a 222,222 0 1,1 444,0 a 222,222 0 1,1 -444,0" />
+          </defs>
+          <text>
+            <textPath href="#orbitPath" startOffset="0%">
+              HARD WORK BEATS TALENT &#8226; ONE FOOT IN FRONT OF THE OTHER &#8226; FAITH &#8226; FAMILY &#8226; SERVICE &#8226;
+            </textPath>
+          </text>
+        </svg>
+
+        <!-- Centered photo -->
+        <div class="medallion-photo-ring">
+          <img src="images/profile.jpg" alt="Portrait of Joshua Bassoo">
+        </div>
+      </div>
+
+      <div class="hero-name">
+        <p class="eyebrow">Welcome</p>
+        <h1 class="display-heading">Joshua Bassoo</h1>
+        <p class="role-line">Builder &nbsp;&middot;&nbsp; Servant &nbsp;&middot;&nbsp; Work in Progress</p>
+      </div>
+
+    </div>
+
+    <div class="scroll-cue">Scroll</div>
+  </section>
+
+  <!-- ===== INTRO STATEMENT ===== -->
+  <section class="section">
+    <div class="container container-narrow text-center">
+      <p class="eyebrow">A Brief Word</p>
+      <h2 class="display-heading mb-4" style="font-size: clamp(1.6rem, 3.4vw, 2.4rem);">
+        This is less a résumé and more a record of <em>how</em> I try to live —
+      </h2>
+      <p class="lede">
+        a quiet effort to put one foot in front of the other, to work before I'm asked,
+        and to leave the people and places I touch a little better than I found them.
+        Look around. Every page here is another angle on the same idea.
+      </p>
+      <hr class="hairline">
+      <div class="row mt-5 g-4">
+        <div class="col-md-4">
+          <p class="eyebrow mb-2">01</p>
+          <p class="text-muted small">Discover the principles that steady me — <a href="pages/about.html">About</a></p>
+        </div>
+        <div class="col-md-4">
+          <p class="eyebrow mb-2">02</p>
+          <p class="text-muted small">Review the record of my work and service — <a href="pages/resume.html">Résumé</a></p>
+        </div>
+        <div class="col-md-4">
+          <p class="eyebrow mb-2">03</p>
+          <p class="text-muted small">See the pursuits that shape my days — <a href="pages/gallery.html">Gallery</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer-stoic">
+    <div class="container">
+      <div class="footer-links mb-2">
+        <a href="index.html">Home</a>
+        <a href="pages/about.html">About</a>
+        <a href="pages/resume.html">Résumé</a>
+        <a href="pages/gallery.html">Gallery</a>
+      </div>
+      &copy; 2026 Joshua Bassoo
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

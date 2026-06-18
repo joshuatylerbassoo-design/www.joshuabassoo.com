@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FORGE — A Word Game of Grit</title>
+<style>
+  :root{
+    --bg:#0a0a0a;
+    --panel:#141312;
+    --line:#2c2a26;
+    --text:#f0ede5;
+    --muted:#8a8378;
+    --bronze:#b08d57;
+    --bronze-light:#d4b483;
+    --green:#5a7a52;
+    --yellow:#b39a4a;
+    --gray:#3a3733;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Georgia','Times New Roman',serif;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:2rem 1rem 3rem;
+  }
+  header{
+    text-align:center;
+    margin-bottom:1.4rem;
+  }
+  .eyebrow{
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:0.68rem;
+    letter-spacing:0.32em;
+    text-transform:uppercase;
+    color:var(--bronze);
+    display:block;
+    margin-bottom:0.6rem;
+  }
+  h1{
+    margin:0;
+    font-size:2.2rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+  }
+  .tagline{
+    color:var(--muted);
+    font-size:0.92rem;
+    font-style:italic;
+    margin-top:0.4rem;
+  }
+  .controls{
+    display:flex;
+    gap:0.8rem;
+    align-items:center;
+    margin-bottom:1.6rem;
+    font-family:Arial, Helvetica, sans-serif;
+  }
+  .controls button{
+    background:transparent;
+    border:1px solid var(--bronze);
+    color:var(--bronze-light);
+    font-size:0.7rem;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    padding:0.5rem 1rem;
+    cursor:pointer;
+    transition:background 0.25s, color 0.25s;
+  }
+  .controls button:hover{
+    background:var(--bronze);
+    color:var(--bg);
+  }
+  .controls label{
+    font-size:0.7rem;
+    letter-spacing:0.08em;
+    color:var(--muted);
+    display:flex;
+    align-items:center;
+    gap:0.4rem;
+    text-transform:uppercase;
+  }
+  #board{
+    display:grid;
+    grid-template-rows:repeat(6, 1fr);
+    gap:8px;
+    margin-bottom:1.8rem;
+  }
+  .row{
+    display:grid;
+    grid-template-columns:repeat(5, 56px);
+    gap:8px;
+  }
+  .tile{
+    width:56px;
+    height:56px;
+    border:2px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:1.7rem;
+    font-weight:bold;
+    text-transform:uppercase;
+    color:var(--text);
+    background:var(--panel);
+    transition:transform 0.15s ease;
+  }
+  .tile.pop{
+    transform:scale(1.08);
+  }
+  .tile.correct{ background:var(--green); border-color:var(--green); }
+  .tile.present{ background:var(--yellow); border-color:var(--yellow); }
+  .tile.absent{ background:var(--gray); border-color:var(--gray); color:var(--muted); }
+  .tile.flip{
+    animation:flip 0.5s ease;
+  }
+  @keyframes flip{
+    0%{ transform: rotateX(0); }
+    50%{ transform: rotateX(90deg); }
+    100%{ transform: rotateX(0); }
+  }
+
+  #message{
+    min-height:1.6rem;
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:0.85rem;
+    letter-spacing:0.05em;
+    color:var(--bronze-light);
+    margin-bottom:1rem;
+    text-align:center;
+    text-transform:uppercase;
+  }
+
+  #keyboard{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    width:100%;
+    max-width:480px;
+  }
+  .krow{
+    display:flex;
+    justify-content:center;
+    gap:6px;
+  }
+  .key{
+    font-family:Arial, Helvetica, sans-serif;
+    background:var(--panel);
+    border:1px solid var(--line);
+    color:var(--text);
+    border-radius:4px;
+    padding:0.75rem 0.6rem;
+    font-size:0.78rem;
+    text-transform:uppercase;
+    cursor:pointer;
+    min-width:32px;
+    text-align:center;
+    transition:background 0.2s;
+    user-select:none;
+  }
+  .key:hover{
+    border-color:var(--bronze);
+  }
+  .key.wide{
+    min-width:54px;
+    font-size:0.65rem;
+  }
+  .key.correct{ background:var(--green); border-color:var(--green); }
+  .key.present{ background:var(--yellow); border-color:var(--yellow); }
+  .key.absent{ background:var(--gray); border-color:var(--gray); color:var(--muted); }
+
+  footer{
+    margin-top:2.4rem;
+    text-align:center;
+  }
+  footer a{
+    color:var(--muted);
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:0.72rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    text-decoration:none;
+    border-bottom:1px solid var(--line);
+  }
+  footer a:hover{
+    color:var(--bronze-light);
+    border-color:var(--bronze);
+  }
+
+  #toast{
+    position:fixed;
+    top:1.5rem;
+    left:50%;
+    transform:translateX(-50%);
+    background:var(--text);
+    color:var(--bg);
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:0.8rem;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    padding:0.7rem 1.4rem;
+    border-radius:4px;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.3s ease, transform 0.3s ease;
+    z-index:10;
+  }
+  #toast.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(6px);
+  }
+
+  @media (max-width:380px){
+    .row{ grid-template-columns:repeat(5, 48px); }
+    .tile{ width:48px; height:48px; font-size:1.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<div id="toast"></div>
+
+<header>
+  <span class="eyebrow">A Small Word Game</span>
+  <h1>FORGE</h1>
+  <p class="tagline">Five letters. Six tries. One foot in front of the other.</p>
+</header>
+
+<div class="controls">
+  <button id="newWordBtn">New Word</button>
+  <label><input type="checkbox" id="hardMode"> Hard Mode</label>
+</div>
+
+<div id="message"></div>
+<div id="board"></div>
+<div id="keyboard"></div>
+
+<footer>
+  <a href="../scratch.html">&larr; Back to the patriotism page</a>
+</footer>
+
+<script>
+(function(){
+  // Word bank: words tied to grit, discipline, country, and tradition —
+  // the same themes running through the rest of the site. All 5-letter words.
+  const WORD_LIST = [
+    "GRIND","HONOR","BUILD","FORGE","STAND","BRAVE","TRUTH","STEEL",
+    "FAITH","GUARD","EARTH","NORTH","RANCH","STONE","CLIMB","TRAIL",
+    "RIFLE","MEDAL","TROOP","UNION","EAGLE","CIVIC"
+  ];
+
+  const ROWS = 6, COLS = 5;
+  let answer = "";
+  let currentRow = 0;
+  let currentCol = 0;
+  let board = [];
+  let gameOver = false;
+  let hardMode = false;
+  let lockedHints = {}; // for hard mode: position -> letter; presentLetters set
+
+  const boardEl = document.getElementById("board");
+  const keyboardEl = document.getElementById("keyboard");
+  const messageEl = document.getElementById("message");
+  const toastEl = document.getElementById("toast");
+  const hardModeToggle = document.getElementById("hardMode");
+  const newWordBtn = document.getElementById("newWordBtn");
+
+  function pickWord(){
+    return WORD_LIST[Math.floor(Math.random() * WORD_LIST.length)];
+  }
+
+  function showToast(text){
+    toastEl.textContent = text;
+    toastEl.classList.add("show");
+    setTimeout(() => toastEl.classList.remove("show"), 1500);
+  }
+
+  function buildBoard(){
+    boardEl.innerHTML = "";
+    board = [];
+    for(let r = 0; r < ROWS; r++){
+      const rowEl = document.createElement("div");
+      rowEl.className = "row";
+      const rowTiles = [];
+      for(let c = 0; c < COLS; c++){
+        const tile = document.createElement("div");
+        tile.className = "tile";
+        rowEl.appendChild(tile);
+        rowTiles.push(tile);
+      }
+      boardEl.appendChild(rowEl);
+      board.push(rowTiles);
+    }
+  }
+
+  const KEY_ROWS = [
+    "Q W E R T Y U I O P".split(" "),
+    "A S D F G H J K L".split(" "),
+    ["ENTER", ..."Z X C V B N M".split(" "), "BACK"]
+  ];
+
+  let keyEls = {};
+
+  function buildKeyboard(){
+    keyboardEl.innerHTML = "";
+    keyEls = {};
+    KEY_ROWS.forEach(rowKeys => {
+      const krow = document.createElement("div");
+      krow.className = "krow";
+      rowKeys.forEach(k => {
+        const btn = document.createElement("div");
+        btn.className = "key" + ((k === "ENTER" || k === "BACK") ? " wide" : "");
+        btn.textContent = k === "BACK" ? "DEL" : k;
+        btn.addEventListener("click", () => handleKey(k));
+        krow.appendChild(btn);
+        keyEls[k] = btn;
+      });
+      keyboardEl.appendChild(krow);
+    });
+  }
+
+  function startGame(){
+    answer = pickWord();
+    currentRow = 0;
+    currentCol = 0;
+    gameOver = false;
+    lockedHints = {};
+    messageEl.textContent = "";
+    buildBoard();
+    buildKeyboard();
+  }
+
+  function handleKey(k){
+    if(gameOver) return;
+    if(k === "ENTER"){
+      submitGuess();
+    } else if(k === "BACK"){
+      if(currentCol > 0){
+        currentCol--;
+        board[currentRow][currentCol].textContent = "";
+        board[currentRow][currentCol].classList.remove("pop");
+      }
+    } else if(/^[A-Z]$/.test(k)){
+      if(currentCol < COLS){
+        board[currentRow][currentCol].textContent = k;
+        board[currentRow][currentCol].classList.add("pop");
+        currentCol++;
+      }
+    }
+  }
+
+  function currentGuess(){
+    return board[currentRow].map(t => t.textContent).join("");
+  }
+
+  function submitGuess(){
+    const guess = currentGuess();
+    if(guess.length < COLS){
+      showToast("Not enough letters");
+      shakeRow(currentRow);
+      return;
+    }
+    if(!/^[A-Z]{5}$/.test(guess)){
+      showToast("Not a valid 5-letter word");
+      shakeRow(currentRow);
+      return;
+    }
+
+    // Hard mode validation: any previously revealed correct/present letters
+    // must be reused in the right way.
+    if(hardMode){
+      const violation = checkHardMode(guess);
+      if(violation){
+        showToast(violation);
+        shakeRow(currentRow);
+        return;
+      }
+    }
+
+    const result = scoreGuess(guess, answer);
+    revealRow(currentRow, result, guess);
+
+    // Update hard-mode constraints
+    if(hardMode){
+      result.forEach((res, i) => {
+        if(res === "correct") lockedHints[i] = guess[i];
+      });
+    }
+
+    if(guess === answer){
+      gameOver = true;
+      setTimeout(() => showToast("Solved! Well done."), 600);
+      messageEl.textContent = "FORGED. The word was " + answer + ".";
+      return;
+    }
+
+    currentRow++;
+    currentCol = 0;
+
+    if(currentRow === ROWS){
+      gameOver = true;
+      messageEl.textContent = "Out of tries. The word was " + answer + ".";
+    }
+  }
+
+
+
+  function checkHardMode(guess){
+    for(const pos in lockedHints){
+      if(guess[pos] !== lockedHints[pos]){
+        return "Letter " + lockedHints[pos] + " must be in position " + (parseInt(pos)+1);
+      }
+    }
+    return null;
+  }
+
+  function scoreGuess(guess, answer){
+    const result = new Array(COLS).fill("absent");
+    const answerArr = answer.split("");
+    const used = new Array(COLS).fill(false);
+
+    // First pass: correct
+    for(let i = 0; i < COLS; i++){
+      if(guess[i] === answer[i]){
+        result[i] = "correct";
+        used[i] = true;
+      }
+    }
+    // Second pass: present
+    for(let i = 0; i < COLS; i++){
+      if(result[i] === "correct") continue;
+      const idx = answerArr.findIndex((ch, j) => ch === guess[i] && !used[j]);
+      if(idx !== -1){
+        result[i] = "present";
+        used[idx] = true;
+      }
+    }
+    return result;
+  }
+
+  function revealRow(row, result, guess){
+    result.forEach((res, i) => {
+      const tile = board[row][i];
+      setTimeout(() => {
+        tile.classList.add("flip");
+        tile.classList.add(res);
+        updateKeyColor(guess[i], res);
+      }, i * 220);
+    });
+  }
+
+  const keyPriority = { "absent": 0, "present": 1, "correct": 2 };
+  function updateKeyColor(letter, res){
+    const el = keyEls[letter];
+    if(!el) return;
+    const currentClass = ["absent","present","correct"].find(c => el.classList.contains(c));
+    if(!currentClass || keyPriority[res] > keyPriority[currentClass]){
+      el.classList.remove("absent","present","correct");
+      el.classList.add(res);
+    }
+  }
+
+  function shakeRow(row){
+    const rowEl = boardEl.children[row];
+    rowEl.style.transform = "translateX(-6px)";
+    setTimeout(() => rowEl.style.transform = "translateX(6px)", 80);
+    setTimeout(() => rowEl.style.transform = "translateX(0)", 160);
+  }
+
+  document.addEventListener("keydown", (e) => {
+    let k = e.key.toUpperCase();
+    if(k === "ENTER") handleKey("ENTER");
+    else if(k === "BACKSPACE") handleKey("BACK");
+    else if(/^[A-Z]$/.test(k)) handleKey(k);
+  });
+
+  newWordBtn.addEventListener("click", startGame);
+  hardModeToggle.addEventListener("change", (e) => {
+    hardMode = e.target.checked;
+    showToast(hardMode ? "Hard mode on" : "Hard mode off");
+  });
+
+  startGame();
+})();
+</script>
+
+</body>
+</html>
